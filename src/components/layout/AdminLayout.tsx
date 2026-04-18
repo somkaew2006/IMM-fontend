@@ -11,6 +11,7 @@ import {
   CodeSandboxOutlined,
   FormOutlined,
   TableOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,7 +36,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         token: {
           colorPrimary: "#1677ff", // Classic Admin Blue
           borderRadius: 4,
-          fontFamily: "var(--font-geist-sans), sans-serif",
+          fontFamily: "var(--font-kanit), sans-serif",
         },
         components: {
           Layout: {
@@ -115,6 +116,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   key: "/tables",
                   icon: <TableOutlined />,
                   label: <Link href="/tables">Sample Tables</Link>,
+                },
+                {
+                  key: "booking_menu",
+                  icon: <BookOutlined />,
+                  label: "Booking",
+                  children: [
+                    {
+                      key: "/booking",
+                      label: <Link href="/booking">Booking</Link>,
+                    },
+                  ],
                 },
                 {
                   key: "sub1",

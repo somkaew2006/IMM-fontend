@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Kanit, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const kanit = Kanit({
+  variable: "--font-kanit",
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin", "thai"],
 });
 
 const geistMono = Geist_Mono({
@@ -27,10 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
+      className={`${kanit.variable} ${geistMono.variable} antialiased h-full`}
     >
-      <body className="h-full m-0 p-0 overflow-hidden font-sans">
+      <body className="h-full m-0 p-0 overflow-y-auto font-sans" suppressHydrationWarning>
         <AntdRegistry>
           <AdminLayout>{children}</AdminLayout>
         </AntdRegistry>
