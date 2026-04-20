@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         token: {
           colorPrimary: "#1677ff", // Classic Admin Blue
           borderRadius: 4,
-          fontFamily: "var(--font-kanit), sans-serif",
+          fontFamily: "var(--font-prompt), sans-serif",
         },
         components: {
           Layout: {

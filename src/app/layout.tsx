@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Kanit, Geist_Mono } from "next/font/google";
+import { Prompt, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 
-const kanit = Kanit({
-  variable: "--font-kanit",
+const prompt = Prompt({
+  variable: "--font-prompt",
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin", "thai"],
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={`${kanit.variable} ${geistMono.variable} antialiased h-full`}
+      className={`${prompt.variable} ${geistMono.variable} antialiased h-full`}
     >
       <body className="h-full m-0 p-0 overflow-y-auto font-sans" suppressHydrationWarning>
         <AntdRegistry>

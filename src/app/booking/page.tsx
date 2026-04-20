@@ -33,6 +33,10 @@ type Booking = {
   mainVesselLoa: number | string;
   beam: number | string;
   draft: number | string;
+  arrivalDate?: string;
+  departureDate?: string;
+  arrival_date?: string;
+  departure_date?: string;
   grandTotal: string | number;
   createdAt: string;
   details: BookingDetail[];
@@ -94,6 +98,22 @@ export default function BookingPage() {
           </div>
         </div>
       ),
+    }),
+    columnHelper.accessor((row) => row.arrivalDate || row.arrival_date, {
+      id: "arrivalDate",
+      header: "Arrival Date",
+      cell: (info) => {
+        const val = info.getValue();
+        return val ? new Date(val).toLocaleDateString("th-TH") : "-";
+      },
+    }),
+    columnHelper.accessor((row) => row.departureDate || row.departure_date, {
+      id: "departureDate",
+      header: "Departure Date",
+      cell: (info) => {
+        const val = info.getValue();
+        return val ? new Date(val).toLocaleDateString("th-TH") : "-";
+      },
     }),
     columnHelper.accessor("grandTotal", {
       header: "Grand Total",
