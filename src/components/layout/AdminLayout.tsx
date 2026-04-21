@@ -12,6 +12,7 @@ import {
   FormOutlined,
   TableOutlined,
   BookOutlined,
+  AuditOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -71,16 +72,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         >
           {/* Logo Area */}
           <div className="flex items-center justify-center h-16 bg-[#343a40] border-b border-[#4b545c]">
-             {collapsed ? (
+            {collapsed ? (
+              <CodeSandboxOutlined className="text-white text-2xl" />
+            ) : (
+              <div className="flex items-center gap-2 px-4 w-full">
                 <CodeSandboxOutlined className="text-white text-2xl" />
-             ) : (
-                <div className="flex items-center gap-2 px-4 w-full">
-                  <CodeSandboxOutlined className="text-white text-2xl" />
-                  <span className="text-white font-bold text-lg whitespace-nowrap overflow-hidden text-ellipsis">
-                    ERP Admin
-                  </span>
-                </div>
-             )}
+                <span className="text-white font-bold text-lg whitespace-nowrap overflow-hidden text-ellipsis">
+                  ERP Admin
+                </span>
+              </div>
+            )}
           </div>
 
           {/* User Panel (Optional AdminLTE style) */}
@@ -118,13 +119,24 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   label: <Link href="/tables">Sample Tables</Link>,
                 },
                 {
-                  key: "booking_menu",
+                  key: "sales_billing_menu",
                   icon: <BookOutlined />,
-                  label: "Booking",
+                  label: "Sales",
                   children: [
                     {
                       key: "/booking",
                       label: <Link href="/booking">Booking</Link>,
+                    },
+                  ],
+                },
+                {
+                  key: "financial_menu",
+                  icon: <AuditOutlined />,
+                  label: "Financial",
+                  children: [
+                    {
+                      key: "/quotation",
+                      label: <Link href="/quotation">Quotation</Link>,
                     },
                   ],
                 },
@@ -181,11 +193,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               />
             </div>
             <div className="flex items-center pe-4">
-               {/* Top Right Header tools */}
-               <Button type="text" icon={<UserOutlined />} />
+              {/* Top Right Header tools */}
+              <Button type="text" icon={<UserOutlined />} />
             </div>
           </Header>
-          
+
           <Content
             style={{
               margin: "24px 16px",
