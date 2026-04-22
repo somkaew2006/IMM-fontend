@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Layout, Menu, Button, theme, ConfigProvider, Typography, Avatar } from "antd";
+import { Layout, Menu, Button, theme, ConfigProvider, Typography, Avatar, Space } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -12,7 +12,11 @@ import {
   FormOutlined,
   TableOutlined,
   BookOutlined,
-  AuditOutlined
+  AuditOutlined,
+  BellOutlined,
+  SearchOutlined,
+  CalendarOutlined,
+  AccountBookOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,32 +30,50 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
   const pathname = usePathname();
 
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#1677ff", // Classic Admin Blue
-          borderRadius: 4,
+          colorPrimary: "#26a69a",
+          borderRadius: 20,
           fontFamily: "var(--font-prompt), sans-serif",
+          colorBgBase: "#ffffff",
+          colorTextBase: "#1e293b",
         },
         components: {
           Layout: {
-            siderBg: "#343a40", // AdminLTE dark sidebar
+            siderBg: "#26a69a",
             headerBg: "#ffffff",
+            bodyBg: "#f8fafc",
           },
           Menu: {
-            darkItemBg: "#343a40",
-            darkSubMenuItemBg: "#2c3136",
-            darkItemSelectedBg: "#007bff",
-            darkItemColor: "#c2c7d0",
-            darkItemHoverColor: "#ffffff",
-            darkItemSelectedColor: "#ffffff",
+            itemBg: "transparent",
+            itemSelectedBg: "#ffffff",
+            itemSelectedColor: "#26a69a",
+            itemActiveColor: "#ffffff",
+            itemHoverBg: "rgba(255, 255, 255, 0.1)",
+            itemHoverColor: "#ffffff",
+            itemColor: "#ffffff",
+            colorText: "#ffffff",
+            itemBorderRadius: 100, // Pill shape for selected item
+            subMenuItemBg: "transparent",
+            popupBg: "#26a69a",
+            groupTitleColor: "rgba(255, 255, 255, 0.45)",
+            subMenuColor: "#ffffff",
+            itemColor: "#ffffff",
           },
+          Card: {
+            borderRadiusLG: 24,
+          },
+          Button: {
+            borderRadius: 12,
+            controlHeight: 40,
+          },
+          Table: {
+            borderRadius: 16,
+          }
         },
       }}
     >
@@ -60,7 +82,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           trigger={null}
           collapsible
           collapsed={collapsed}
-          width={250}
+          width={260}
           style={{
             overflow: "auto",
             height: "100vh",
@@ -68,38 +90,25 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             left: 0,
             top: 0,
             bottom: 0,
+            zIndex: 10,
+            borderRight: "none",
           }}
+          className="sidebar-gradient-bg"
         >
           {/* Logo Area */}
-          <div className="flex items-center justify-center h-16 bg-[#343a40] border-b border-[#4b545c]">
-            {collapsed ? (
-              <CodeSandboxOutlined className="text-white text-2xl" />
-            ) : (
-              <div className="flex items-center gap-2 px-4 w-full">
-                <CodeSandboxOutlined className="text-white text-2xl" />
-                <span className="text-white font-bold text-lg whitespace-nowrap overflow-hidden text-ellipsis">
-                  ERP Admin
-                </span>
-              </div>
+          <div className="flex items-center gap-3 px-6 h-20 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-xl">
+              <CodeSandboxOutlined className="text-teal-600 text-2xl" />
+            </div>
+            {!collapsed && (
+              <span className="text-white font-black text-xl tracking-tight uppercase antialiased">
+                IMM ERP
+              </span>
             )}
           </div>
 
-          {/* User Panel (Optional AdminLTE style) */}
-          {!collapsed && (
-            <div className="flex items-center gap-3 p-4 border-b border-[#4b545c]">
-              <Avatar icon={<UserOutlined />} className="bg-slate-500" />
-              <div className="flex flex-col overflow-hidden text-ellipsis">
-                <span className="text-[#c2c7d0] font-medium text-sm">Admin User</span>
-                <span className="text-[#869099] text-xs flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Online
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div className="py-2">
+          <div className="px-1">
             <Menu
-              theme="dark"
               mode="inline"
               selectedKeys={[pathname]}
               items={[
@@ -109,106 +118,106 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   label: <Link href="/">Dashboard</Link>,
                 },
                 {
-                  key: "/forms",
-                  icon: <FormOutlined />,
-                  label: <Link href="/forms">Sample Forms</Link>,
-                },
-                {
-                  key: "/tables",
-                  icon: <TableOutlined />,
-                  label: <Link href="/tables">Sample Tables</Link>,
-                },
-                {
-                  key: "sales_billing_menu",
-                  icon: <BookOutlined />,
-                  label: "Sales",
+                  key: "booking_menu",
+                  icon: <CalendarOutlined />,
+                  label: "Booking",
                   children: [
                     {
                       key: "/booking",
                       label: <Link href="/booking">Booking</Link>,
                     },
-                  ],
+                  ]
                 },
                 {
-                  key: "financial_menu",
-                  icon: <AuditOutlined />,
-                  label: "Financial",
+                  key: "finance_menu",
+                  icon: <AccountBookOutlined />,
+                  label: "Finance",
                   children: [
                     {
                       key: "/quotation",
                       label: <Link href="/quotation">Quotation</Link>,
                     },
-                  ],
+                    {
+                      key: "/rv",
+                      label: <Link href="/rv">Receive voucher</Link>,
+                    },
+                  ]
                 },
                 {
-                  key: "sub1",
+                  key: "/settings",
                   icon: <SettingOutlined />,
-                  label: "Settings",
-                  children: [
-                    {
-                      key: "/settings/users",
-                      label: <Link href="/settings/users">Users</Link>,
-                    },
-                  ],
+                  label: <Link href="/settings">Settings</Link>,
                 },
               ]}
+              style={{ borderRight: 0, background: 'transparent' }}
             />
           </div>
+
+          
         </Sider>
 
         <Layout
           style={{
-            marginLeft: collapsed ? 80 : 250,
-            transition: "margin-left 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)",
+            marginLeft: collapsed ? 80 : 260,
+            transition: "margin-left 0.2s ease-in-out",
+            background: "#f8fafc",
           }}
         >
           <Header
+            className="glass-header"
             style={{
-              padding: "0 16px",
-              background: colorBgContainer,
+              padding: "0 24px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              boxShadow: "0 1px 4px rgba(0,21,41,0.08)",
-              position: "sticky",
-              top: 0,
-              zIndex: 1,
               width: "100%",
-              height: "60px",
-              lineHeight: "60px",
+              height: "72px",
+              background: "rgba(255, 255, 255, 0.98)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
             }}
           >
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={() => setCollapsed(!collapsed)}
+                className="hover:bg-teal-50 text-teal-600"
                 style={{
-                  fontSize: "16px",
-                  width: 64,
-                  height: 60,
-                  borderRadius: 0,
-                  border: 0,
+                  fontSize: "18px",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
                 }}
               />
             </div>
-            <div className="flex items-center pe-4">
-              {/* Top Right Header tools */}
-              <Button type="text" icon={<UserOutlined />} />
+            
+            <div className="flex items-center gap-3">
+              <Button type="text" icon={<BellOutlined />} className="text-slate-400 hover:text-teal-500" />
+              <div className="h-8 w-px bg-slate-200 mx-2"></div>
+              <Space size={12} className="cursor-pointer hover:bg-slate-50 p-1 rounded-2xl transition-all">
+                 <div className="text-right hidden sm:block">
+                    <Text strong className="block text-xs text-slate-800">Admin Account</Text>
+                    <Text className="block text-[10px] text-slate-400">System Operator</Text>
+                 </div>
+                 <Avatar 
+                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" 
+                    className="bg-teal-100 border-2 border-teal-50"
+                    size={40}
+                 />
+              </Space>
             </div>
           </Header>
 
           <Content
             style={{
-              margin: "24px 16px",
-              padding: 24,
+              padding: "24px 32px",
               minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
               overflow: "initial",
             }}
           >
-            {children}
+            <div className="animate-fade-in">
+              {children}
+            </div>
           </Content>
         </Layout>
       </Layout>

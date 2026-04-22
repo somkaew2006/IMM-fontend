@@ -11,7 +11,8 @@ import {
   message,
   Spin,
   Input,
-  Tooltip
+  Tooltip,
+  Avatar
 } from "antd";
 import {
   ReloadOutlined,
@@ -93,10 +94,10 @@ export default function QuotationListPage() {
       width: 150,
       render: (text: string, record: Quotation) => (
         <div className="flex flex-col py-0.5 whitespace-nowrap">
-          <Text strong className="text-indigo-600 font-mono hover:text-blue-500 cursor-pointer">
+          <Text className="text-teal-600 font-mono font-bold hover:text-teal-500 cursor-pointer text-xs">
             {text}
           </Text>
-          <Text className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1 tracking-wide">
+          <Text className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1 tracking-wide font-medium">
             <CalendarOutlined style={{ fontSize: '9px' }} />
             {dayjs(record.quDate).format("DD/MM/YYYY")}
           </Text>
@@ -110,7 +111,7 @@ export default function QuotationListPage() {
       render: (_: any, record: Quotation) => {
         const refNo = record.refBookingNo || record.ref_booking_no;
         return refNo ? (
-          <Tag color="geekblue" className="rounded-full px-3 py-0 text-[10px] font-bold border-none whitespace-nowrap">
+          <Tag color="teal" className="rounded-full px-3 py-0 text-[10px] font-bold border-none whitespace-nowrap bg-teal-50 text-teal-600">
             {refNo}
           </Tag>
         ) : (
@@ -123,11 +124,13 @@ export default function QuotationListPage() {
       dataIndex: "customerName",
       key: "customerName",
       render: (text: string) => (
-        <Space size={8}>
-          <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center">
-            <UserOutlined className="text-[10px] text-slate-400" />
-          </div>
-          <Text className="text-slate-700 font-medium">{text || "N/A"}</Text>
+        <Space size={10}>
+          <Avatar 
+            icon={<UserOutlined />} 
+            size={28} 
+            className="bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center font-bold"
+          />
+          <Text className="text-slate-700 font-semibold text-xs tracking-tight">{text || "N/A"}</Text>
         </Space>
       )
     },
@@ -136,9 +139,9 @@ export default function QuotationListPage() {
       key: "vessel",
       render: (_: any, record: Quotation) => (
         <div className="flex flex-col">
-          <Space size={6}>
-            <CompassOutlined className="text-indigo-300" />
-            <Text className="text-slate-700 font-medium">{record.vesselName || "N/A"}</Text>
+          <Space size={8}>
+            <CompassOutlined className="text-teal-400" />
+            <Text className="text-slate-600 font-semibold text-xs tracking-tight">{record.vesselName || "N/A"}</Text>
           </Space>
           <div className="flex gap-4 mt-1.5 pl-5">
             <div className="flex flex-col">
@@ -175,8 +178,8 @@ export default function QuotationListPage() {
       key: "stayType",
       width: 100,
       render: (val: string) => (
-        <Tag color={val === 'monthly' ? 'blue' : 'cyan'} className="m-0 border-none px-2.5 rounded-full text-[10px] font-bold  tracking-wider">
-          {val || 'Daily'}
+        <Tag className={`m-0 border-none px-2.5 rounded-full text-[10px] font-bold tracking-wider ${val === 'monthly' ? 'bg-blue-50 text-blue-600' : 'bg-teal-50 text-teal-600'}`}>
+          {val?.toUpperCase() || 'DAILY'}
         </Tag>
       )
     },
@@ -186,11 +189,9 @@ export default function QuotationListPage() {
       key: "grandTotal",
       align: "right" as const,
       render: (val: number) => (
-        <div className="flex flex-col items-end">
-          <Text strong className="text-sm text-slate-800">
-            {new Intl.NumberFormat("th-TH", { minimumFractionDigits: 2 }).format(val || 0)}
-          </Text>
-        </div>
+        <Text className="font-bold text-teal-600 text-xs">
+          {new Intl.NumberFormat("th-TH", { minimumFractionDigits: 2 }).format(val || 0)}
+        </Text>
       )
     },
     {
@@ -250,12 +251,12 @@ export default function QuotationListPage() {
     ]);
 
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-    
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     doc.setTextColor(30, 41, 59); // slate-800
     doc.text("Quotation List", 14, 15);
-    
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(100, 116, 139); // slate-500
@@ -267,15 +268,15 @@ export default function QuotationListPage() {
       head: [["QU No", "Date", "Customer", "Vessel", "Arrival", "Type", "Total", "Status"]],
       body: tableData,
       theme: "striped",
-      headStyles: { 
+      headStyles: {
         fillColor: [79, 70, 229], // Indigo-600
-        textColor: 255, 
-        fontSize: 10, 
+        textColor: 255,
+        fontSize: 10,
         halign: 'center',
         fontStyle: 'bold'
       },
-      styles: { 
-        fontSize: 9, 
+      styles: {
+        fontSize: 9,
         cellPadding: 3,
         font: 'helvetica'
       },
@@ -295,46 +296,65 @@ export default function QuotationListPage() {
         <div>
           <Title level={3} className="m-0 font-bold tracking-tight text-slate-800">Quotation List</Title>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Input
             placeholder="Search documents..."
-            prefix={<SearchOutlined className="text-slate-300" />}
-            className="w-64 rounded-xl border-none shadow-sm h-11"
+            prefix={<SearchOutlined className="text-slate-400" />}
+            className="w-64 rounded-2xl border-none shadow-sm h-11 bg-white"
             allowClear
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Link href="/quotation/create">
-            <Button type="primary" icon={<PlusOutlined />} className="bg-indigo-600 rounded-xl px-6 h-11 font-bold shadow-md shadow-indigo-100 border-none transition-all hover:scale-105">
-              New Quotation
-            </Button>
-          </Link>
-          <Button icon={<ReloadOutlined />} onClick={loadData} className="rounded-xl h-11 w-11 border-none shadow-sm flex items-center justify-center hover:text-indigo-600" />
-          
-          <div className="flex items-center gap-2 p-1.5 bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-100">
-            <Tooltip title="Export to Excel">
+
+          <div className="flex items-center gap-2">
+            <Link href="/quotation/create">
               <Button 
-                icon={<FileExcelOutlined />} 
-                onClick={handleExportExcel}
-                className="bg-emerald-500 text-white rounded-xl border-none h-9 px-3 hover:bg-emerald-600 transition-all font-bold flex items-center gap-2 text-xs"
+                type="primary" 
+                icon={<PlusOutlined />} 
+                className="bg-teal-600 hover:bg-teal-700 rounded-2xl px-6 h-11 font-bold border-none shadow-lg shadow-teal-500/20 transition-all hover:translate-y-[-1px]"
               >
-                Excel
+                New Quotation
               </Button>
-            </Tooltip>
-            <Tooltip title="Export to PDF">
-              <Button 
-                icon={<FilePdfOutlined />} 
-                onClick={handleExportPDF}
-                className="bg-rose-500 text-white rounded-xl border-none h-9 px-3 hover:bg-rose-600 transition-all font-bold flex items-center gap-2 text-xs"
-              >
-                PDF
-              </Button>
-            </Tooltip>
+            </Link>
+            
+            <div className="h-11 flex items-center bg-white rounded-2xl shadow-sm border border-slate-100 p-1 gap-1">
+              <Tooltip title="Refresh Data">
+                <Button 
+                  type="text"
+                  icon={<ReloadOutlined className="text-slate-400" />} 
+                  onClick={loadData} 
+                  className="rounded-xl h-9 w-9 flex items-center justify-center hover:bg-slate-50 hover:text-teal-600" 
+                />
+              </Tooltip>
+
+              <div className="w-[1px] h-4 bg-slate-100 mx-1"></div>
+
+              <Tooltip title="Export to Excel">
+                <Button
+                  type="text"
+                  icon={<FileExcelOutlined className="text-emerald-500" />}
+                  onClick={handleExportExcel}
+                  className="hover:bg-emerald-50 rounded-xl h-9 px-3 font-bold text-[11px] flex items-center gap-2"
+                >
+                  Excel
+                </Button>
+              </Tooltip>
+              <Tooltip title="Export to PDF">
+                <Button
+                  type="text"
+                  icon={<FilePdfOutlined className="text-rose-500" />}
+                  onClick={handleExportPDF}
+                  className="hover:bg-rose-50 rounded-xl h-9 px-3 font-bold text-[11px] flex items-center gap-2"
+                >
+                  PDF
+                </Button>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Table Card */}
-      <Card variant="borderless" className="rounded-[2rem] shadow-xl border-none overflow-hidden" styles={{ body: { padding: 0 } }}>
+      <Card variant="borderless" className="rounded-3xl shadow-sm border border-slate-50 overflow-hidden" styles={{ body: { padding: 0 } }}>
         <Table
           columns={columns}
           dataSource={filteredData}
@@ -351,27 +371,26 @@ export default function QuotationListPage() {
 
       <style jsx global>{`
         .imm-table .ant-table-thead > tr > th {
-          background: #ffffff !important;
+          background: #fafbfc !important;
           color: #64748b !important;
-          font-size: 11px !important;
-          font-weight: 800 !important;
+          font-size: 10px !important;
+          font-weight: 700 !important;
           letter-spacing: 0.1em !important;
           border-bottom: 2px solid #f8fafc !important;
-          padding: 20px 16px !important;
+          padding: 16px !important;
+          text-transform: uppercase;
         }
         .imm-table .ant-table-tbody > tr > td {
-          padding: 12px 16px !important;
+          padding: 14px 16px !important;
           border-bottom: 1px solid #f1f5f9 !important;
           font-size: 10px !important;
           transition: all 0.2s;
-          white-space: nowrap;
         }
-        /* Zebra Striping */
         .imm-table .ant-table-tbody > tr:nth-child(even) {
           background-color: #fafbfc;
         }
         .imm-table .ant-table-tbody > tr:hover > td {
-          background: #eff6ff !important;
+          background: #f0fdf9 !important;
         }
       `}</style>
     </div>

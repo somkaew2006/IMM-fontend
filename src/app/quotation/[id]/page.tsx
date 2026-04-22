@@ -19,7 +19,8 @@ import {
   Form,
   Select,
   DatePicker,
-  Input
+  Input,
+  Avatar
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -392,46 +393,66 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 no-print">
-        <Space size="middle">
-          <Link href="/quotation"><Button icon={<ArrowLeftOutlined />} shape="circle" className="border-slate-200" /></Link>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 no-print">
+        <Space size={20}>
+          <Link href="/quotation">
+            <Button 
+              icon={<ArrowLeftOutlined />} 
+              shape="circle" 
+              className="border-slate-200 text-slate-400 hover:text-teal-600 hover:border-teal-200 w-10 h-10 flex items-center justify-center" 
+            />
+          </Link>
           <div>
             <div className="flex items-center gap-3">
-              <Title level={2} className="m-0 text-slate-800 font-bold">{qNo}</Title>
-              <Tag color={['confirmed', 'approved', 'complete'].includes(data.status?.toLowerCase() || '') ? 'success' : 'processing'} className="rounded-full px-4 border-none font-bold uppercase text-[10px] tracking-wider mb-1">
+              <Title level={3} className="m-0 text-slate-800 font-bold tracking-tight">{qNo}</Title>
+              <Tag color={['confirmed', 'approved', 'complete'].includes(data.status?.toLowerCase() || '') ? 'success' : 'processing'} className="rounded-full px-4 border-none font-bold uppercase text-[10px] tracking-widest">
                 {data.status || 'DRAFT'}
               </Tag>
-              {refNo && (
-                <Tag color="geekblue" className="rounded-full px-3 border-none font-bold text-[10px] mb-1">
-                  REF: {refNo}
-                </Tag>
-              )}
             </div>
-            <div className="flex items-center gap-4">
-              <Text type="secondary" className="flex items-center gap-1 text-[11px]"><CalendarOutlined /> Proposal Date: {dayjs(qDate).format("DD/MM/YYYY")}</Text>
-              {refId && <Text className="text-[11px] text-slate-300 font-mono">Ref ID: {refId}</Text>}
+            <div className="flex items-center gap-4 mt-1">
+              <Text className="flex items-center gap-1.5 text-xs text-slate-500 font-medium whitespace-nowrap"><CalendarOutlined className="text-teal-500" /> Quotation Date: {dayjs(qDate).format("DD MMM YYYY")}</Text>
+              {refNo && (
+                <Text className="text-xs font-semibold text-teal-600 bg-teal-50 px-2.5 py-0.5 rounded-lg">
+                  REF: {refNo}
+                </Text>
+              )}
             </div>
           </div>
         </Space>
 
-        <Space size="middle">
-          <Button icon={<PrinterOutlined />} className="rounded-xl border-slate-200" onClick={handlePrint}>Print QU</Button>
+        <div className="flex items-center gap-3">
+          <Button icon={<PrinterOutlined />} className="rounded-2xl border-slate-200 h-11 px-5 font-medium hover:text-teal-600" onClick={handlePrint}>Print QU</Button>
+          
           {createdRV && (
-             <Button type="primary" icon={<FileTextOutlined />} className="rounded-xl bg-green-600 border-none shadow-md" onClick={handlePrintRV}>Print RV</Button>
+             <Button type="primary" icon={<FileTextOutlined />} className="rounded-2xl bg-emerald-600 border-none shadow-lg shadow-emerald-500/20 h-11 px-5 font-bold" onClick={handlePrintRV}>Print RV</Button>
           )}
-          <Divider orientation="vertical" className="h-8 border-slate-100" />
+
+          <div className="h-8 w-px bg-slate-100 mx-1"></div>
           
           {data.status?.toLowerCase() !== 'complete' && (
-            <>
-              <Tooltip title="Create a Receipt Voucher from this quotation">
-                <Button type="primary" icon={<CheckCircleOutlined />} className="rounded-xl bg-indigo-600 shadow-md border-none px-6" onClick={handleOpenRVModal}>Create RV</Button>
+            <div className="flex items-center gap-2">
+              <Tooltip title="Create a Receipt Voucher">
+                <Button 
+                  type="primary" 
+                  icon={<CheckCircleOutlined />} 
+                  className="rounded-2xl bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-500/20 border-none px-8 h-11 font-bold transition-all hover:translate-y-[-1px]" 
+                  onClick={handleOpenRVModal}
+                >
+                  Create RV
+                </Button>
               </Tooltip>
-              <Popconfirm title="Cancel Quotation" description="Are you sure you want to cancel this quotation?" onConfirm={handleDelete} okText="Yes, Cancel" okButtonProps={{ danger: true, loading: deleting }}>
-                <Button danger icon={<CloseCircleOutlined />} type="text" className="hover:bg-red-50 text-red-500">Cancel</Button>
+              <Popconfirm 
+                title="Cancel Quotation" 
+                description="Are you sure you want to cancel this?" 
+                onConfirm={handleDelete} 
+                okText="Yes, Cancel" 
+                okButtonProps={{ danger: true, loading: deleting }}
+              >
+                <Button danger icon={<CloseCircleOutlined />} type="text" className="hover:bg-red-50 text-red-500 rounded-2xl h-11 font-medium px-4">Cancel</Button>
               </Popconfirm>
-            </>
+            </div>
           )}
-        </Space>
+        </div>
       </div>
 
       <Modal
@@ -531,7 +552,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
            <div className="rv-amount-box">
               <div className="flex justify-between items-center p-6 border border-slate-300 rounded-lg">
-                 <span className="bold text-lg text-blue-600">Total Received Amount:</span>
+                 <span className="bold text-lg text-teal-600">Total Received Amount:</span>
                  <span className="bold text-2xl text-slate-800">฿ {formatCurrency(createdRV.receiveAmount)}</span>
               </div>
            </div>
@@ -549,69 +570,93 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
         </div>
       )}
 
-      <Row gutter={32} className="no-print">
+      <Row gutter={[24, 24]} className="no-print">
         <Col span={17}>
           <Space orientation="vertical" size="large" className="w-full">
             <Row gutter={24}>
               <Col span={10}>
-                <Card title={<Space><CalendarOutlined className="text-indigo-500" />Proposal Validity</Space>} variant="borderless" className="rounded-3xl shadow-soft h-full">
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <Text type="secondary" className="text-[10px] font-black opacity-50">Arrival</Text>
-                        <Text strong className="text-lg">{arrival ? dayjs(arrival).format("DD/MM/YYYY") : "Not Set"}</Text>
+                <Card 
+                  title={<Space><div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center"><CalendarOutlined className="text-teal-600" /></div><span className="font-bold text-slate-700 text-sm">Stay Schedule</span></Space>} 
+                  variant="borderless" 
+                  className="rounded-[2rem] shadow-soft h-full border border-slate-100/50"
+                >
+                  <div className="space-y-6 py-2">
+                    <div className="flex items-center justify-between bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
+                      <div className="flex flex-col gap-2">
+                        <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Arrival Date</Text>
+                        <div className="bg-white px-4 py-2 rounded-xl border border-slate-200">
+                           <Text className="text-sm text-slate-800 font-bold">{arrival ? dayjs(arrival).format("DD/MM/YYYY") : "N/A"}</Text>
+                        </div>
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center"><ArrowLeftOutlined className="rotate-180 text-slate-300" /></div>
-                      <div className="flex flex-col text-right">
-                        <Text type="secondary" className="text-[10px] font-black opacity-50">Departure</Text>
-                        <Text strong className="text-lg">{departure ? dayjs(departure).format("DD/MM/YYYY") : "Not Set"}</Text>
+                      <div className="flex items-center justify-center pt-6"><ArrowLeftOutlined className="rotate-180 text-slate-300" /></div>
+                      <div className="flex flex-col gap-2 text-right items-end">
+                        <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Departure Date</Text>
+                        <div className="bg-white px-4 py-2 rounded-xl border border-slate-200">
+                           <Text className="text-sm text-slate-800 font-bold">{departure ? dayjs(departure).format("DD/MM/YYYY") : "N/A"}</Text>
+                        </div>
                       </div>
                     </div>
-                    <Divider className="my-0 border-slate-50" />
-                    <div>
-                      <Text type="secondary" className="text-[10px] font-black opacity-50 block mb-2">Rate Type</Text>
-                      <Tag color={stay === 'monthly' ? 'blue' : 'cyan'} className="rounded-full px-4 py-1 border-none font-bold text-xs">
-                        {stay?.toUpperCase() || 'DAILY'}
-                      </Tag>
+                    
+                    <div className="grid grid-cols-2 gap-4 px-2">
+                      <div className="flex flex-col gap-1.5">
+                         <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Payment Term</Text>
+                         <Text className="text-sm text-teal-600 font-bold uppercase">{stay || 'Daily'}</Text>
+                      </div>
+                      <div className="text-right flex flex-col gap-1.5">
+                         <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Stay Duration</Text>
+                         <Text className="text-base text-slate-800 font-bold lowercase">
+                           {arrival && departure ? dayjs(departure).diff(dayjs(arrival), 'day') : 0} <span className="text-xs font-medium text-slate-400 uppercase tracking-tight">nights</span>
+                         </Text>
+                      </div>
                     </div>
                   </div>
                 </Card>
               </Col>
               <Col span={14}>
-                <Card title={<Space><CompassOutlined className="text-indigo-500" />Client & Vessel</Space>} variant="borderless" className="rounded-3xl shadow-soft h-full">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center">
-                        <UserOutlined className="text-indigo-500 text-xl" />
-                      </div>
+                <Card 
+                  title={<Space><div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center"><CompassOutlined className="text-teal-600" /></div><span className="font-bold text-slate-700 text-sm">Vessel Details</span></Space>} 
+                  variant="borderless" 
+                  className="rounded-[2rem] shadow-soft h-full border border-slate-100/50"
+                >
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                      <Avatar 
+                        icon={<UserOutlined />} 
+                        className="bg-teal-100 text-teal-600 border-2 border-white shadow-sm flex items-center justify-center"
+                        size={48}
+                      />
                       <div>
-                        <Text type="secondary" className="text-[10px] font-black opacity-50 block">Customer</Text>
-                        <Text strong className="text-base text-slate-800">{cName}</Text>
+                        <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium block mb-1">Primary Customer</Text>
+                        <Text className="text-base text-slate-800 font-bold block">{cName}</Text>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center">
-                        <CompassOutlined className="text-slate-400 text-xl" />
-                      </div>
-                      <div>
-                        <Text type="secondary" className="text-[10px] font-black opacity-50 block">Vessel Name</Text>
-                        <Text strong className="text-base text-slate-800">{vName || "No vessel name"}</Text>
-                      </div>
-                    </div>
-                    <div className="bg-slate-50/80 p-5 rounded-2xl flex justify-between gap-4 border border-slate-100">
-                      <div className="text-center flex-1 border-r border-slate-200">
-                        <Text type="secondary" className="block text-[10px] font-black opacity-40">LOA</Text>
-                        <Text strong className="text-lg text-slate-700">{loa || '0.00'}m</Text>
-                      </div>
-                      <div className="text-center flex-1 border-r border-slate-200">
-                        <Text type="secondary" className="block text-[10px] uppercase font-black opacity-40">Beam</Text>
-                        <Text strong className="text-lg text-slate-700">{data.beam || '0.00'}m</Text>
-                      </div>
-                      <div className="text-center flex-1">
-                        <Text type="secondary" className="block text-[10px] uppercase font-black opacity-40">Draft</Text>
-                        <Text strong className="text-lg text-slate-700">{data.draft || '0.00'}m</Text>
-                      </div>
-                    </div>
+                    
+                    <Row gutter={16}>
+                      <Col span={10}>
+                         <div className="flex flex-col gap-1.5 px-1">
+                            <Text className="text-[10px] text-slate-400 uppercase tracking-widest font-medium block">Vessel Name</Text>
+                            <Text className="text-sm text-slate-800 font-bold block truncate" title={vName}>{vName || "N/A"}</Text>
+                         </div>
+                      </Col>
+                      <Col span={14}>
+                        <div className="bg-slate-50/50 p-4 rounded-xl flex justify-between gap-4 border border-slate-100">
+                          <div className="text-center flex-1">
+                            <Text className="block text-[8px] text-slate-400 uppercase tracking-widest mb-1">LOA</Text>
+                            <Text className="text-teal-600 font-bold text-xs">{loa || '0.0'}m</Text>
+                          </div>
+                          <div className="w-px h-6 bg-slate-200"></div>
+                          <div className="text-center flex-1">
+                            <Text className="block text-[8px] text-slate-400 uppercase tracking-widest mb-1">Beam</Text>
+                            <Text className="text-teal-600 font-bold text-xs">{data.beam || '0.0'}m</Text>
+                          </div>
+                          <div className="w-px h-6 bg-slate-200"></div>
+                          <div className="text-center flex-1">
+                            <Text className="block text-[8px] text-slate-400 uppercase tracking-widest mb-1">Draft</Text>
+                            <Text className="text-teal-600 font-bold text-xs">{data.draft || '0.0'}m</Text>
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
                   </div>
                 </Card>
               </Col>
@@ -619,8 +664,8 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
             <Card
               variant="borderless"
-              title={<Space><ShoppingOutlined className="text-indigo-500" /><span className="font-bold">Products/Services</span></Space>}
-              className="rounded-3xl shadow-soft overflow-hidden"
+              title={<Space><div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center"><ShoppingOutlined className="text-teal-600" /></div><span className="font-bold text-slate-700 text-sm">Products & Services</span></Space>}
+              className="rounded-[2rem] shadow-soft overflow-hidden border border-slate-100/50"
               styles={{ body: { padding: 0 } }}
             >
               <Table dataSource={data.details} pagination={false} rowKey={(r) => r.quDetailId || r.product_name || Math.random()} className="modern-table"
@@ -629,7 +674,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
                   { title: "QTY", dataIndex: "qty", width: 90, align: "center", render: (v, r) => <Text className="text-slate-600 font-medium">{v || r.qty || 0}</Text> },
                   { title: "Unit Price", dataIndex: "unitPrice", width: 140, align: "right", render: (v, r) => <Text className="text-slate-600 font-medium">{formatCurrency(v || r.unit_price)}</Text> },
                   { title: "Discount", width: 140, align: "right", render: (_, r) => <Text className="text-orange-600 font-bold">{formatCurrency(r.discount_amount)}</Text> },
-                  { title: "Subtotal", dataIndex: "total_price", width: 160, align: "right", render: (v, r) => <Text strong className="text-indigo-600 text-base">{formatCurrency(v || r.total_price)}</Text> }
+                  { title: "Subtotal", dataIndex: "total_price", width: 160, align: "right", render: (v, r) => <Text strong className="text-teal-600 text-base">{formatCurrency(v || r.total_price)}</Text> }
                 ]}
               />
             </Card>
@@ -638,32 +683,67 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
         <Col span={7} className="no-print">
           <div className="sticky top-6 space-y-6">
-            <Card title={<span className="text-xs font-black tracking-widest text-slate-400">Total Calculation</span>} variant="borderless" className="rounded-3xl shadow-lg border border-slate-100">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-xs px-2">
-                  <Text type="secondary">Gross Amount</Text>
-                  <Text strong className="text-slate-700">{formatCurrency(totalItemBefore)}</Text>
+            <Card 
+              variant="borderless" 
+              className="rounded-[2rem] shadow-xl border border-slate-100 bg-white overflow-hidden"
+              styles={{ body: { padding: 0 } }}
+            >
+              <div className="p-7 space-y-6">
+                <div className="px-1 border-b border-slate-100 pb-3">
+                   <Text className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pricing Summary</Text>
                 </div>
-                <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100 flex justify-between items-center">
-                  <Space><PercentageOutlined className="text-orange-500" /><Text strong className="text-orange-800 text-xs">Global Discount</Text></Space>
-                  <Text className="text-orange-600 font-bold">{formatCurrency(discAmt)}</Text>
-                </div>
-                <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex justify-between items-center">
-                  <Space><SafetyCertificateOutlined className="text-blue-500" /><Text strong className="text-blue-800 text-xs">Service Charge</Text></Space>
-                  <Text className="text-blue-600 font-bold">{formatCurrency(scAmt)}</Text>
-                </div>
-                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex justify-between items-center">
-                  <Space><AuditOutlined className="text-emerald-500" /><Text strong className="text-emerald-800 text-xs">VAT Amount</Text></Space>
-                  <Text className="text-emerald-600 font-bold">{formatCurrency(vtAmt)}</Text>
-                </div>
-                <div className="p-6 bg-indigo-600 rounded-[2rem] text-center shadow-xl shadow-indigo-100">
-                  <Text className="text-white/60 text-[10px] font-black tracking-widest block mb-1">Grand Total</Text>
-                  <Title level={2} className="m-0 text-white font-black" style={{ color: 'white' }}>{formatCurrency(gTotal)}</Title>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center px-1">
+                    <Text className="text-[11px] text-slate-400 font-medium">Subtotal Items</Text>
+                    <Text className="text-sm text-slate-800 font-bold">{formatCurrency(totalItemBefore)}</Text>
+                  </div>
+                  
+                  <div className="flex justify-between items-center px-1">
+                    <Text className="text-[11px] text-slate-400 font-medium">Discount</Text>
+                    <Text className="text-sm text-orange-600 font-bold">{formatCurrency(discAmt)}</Text>
+                  </div>
+                  
+                  <div className="space-y-2 pt-2 border-t border-slate-50">
+                     <div className="flex justify-between items-center">
+                        <Text className="text-[11px] text-slate-400 font-medium">Service Charge (10%)</Text>
+                        <Text className="text-sm text-slate-600 font-bold">{formatCurrency(scAmt)}</Text>
+                     </div>
+                     <div className="flex justify-between items-center">
+                        <Text className="text-[11px] text-slate-400 font-medium">VAT Amount (7%)</Text>
+                        <Text className="text-sm text-slate-600 font-bold">{formatCurrency(vtAmt)}</Text>
+                     </div>
+                  </div>
                 </div>
               </div>
+
+              <div className="bg-teal-600 py-10 px-6 text-center">
+                 <Text className="text-white/60 text-[10px] font-medium tracking-[0.3em] block mb-2 uppercase">Amount Due</Text>
+                 <Title level={1} className="m-0 text-white font-bold text-3xl tracking-tight" style={{ color: 'white' }}>{formatCurrency(gTotal)}</Title>
+              </div>
+              
+              <div className="p-6 bg-slate-50/50">
+                 {data.status?.toLowerCase() !== 'complete' ? (
+                   <Button 
+                      type="primary" 
+                      block 
+                      size="large" 
+                      icon={<CheckCircleOutlined />}
+                      className="rounded-2xl h-14 bg-teal-600 hover:bg-teal-700 border-none font-bold shadow-lg shadow-teal-500/20"
+                      onClick={handleOpenRVModal}
+                    >
+                      Create RV Now
+                    </Button>
+                 ) : (
+                   <div className="bg-emerald-100 text-emerald-800 p-4 rounded-2xl border border-emerald-200 text-center flex items-center justify-center gap-2 font-bold">
+                      <CheckCircleOutlined /> Payment Completed
+                   </div>
+                 )}
+              </div>
             </Card>
+
             <Link href="/quotation">
-              <Button block size="large" className="rounded-2xl h-14 border-slate-200 text-slate-400 hover:text-indigo-600 font-medium">Return to List</Button>
+              <Button block size="large" className="rounded-2xl h-14 border-slate-200 text-slate-400 hover:text-teal-600 font-medium bg-white">Return to List</Button>
             </Link>
           </div>
         </Col>
@@ -722,20 +802,20 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           .company-name-en { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
           .company-info-en { font-size: 8.5px; line-height: 1.2; color: #64748b; }
           
-          .print-divider { border-bottom: 1.5px solid #2563eb; margin: 8px 0; }
-          .print-title { text-align: center; font-size: 15px; font-weight: 800; color: #2563eb; text-transform: uppercase; margin-bottom: 15px; }
+          .print-divider { border-bottom: 1.5px solid #26a69a; margin: 8px 0; }
+          .print-title { text-align: center; font-size: 15px; font-weight: 800; color: #26a69a; text-transform: uppercase; margin-bottom: 15px; }
           
           .print-meta-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 15px; }
           .meta-row { display: flex; margin-bottom: 3px; }
-          .meta-row .label { width: 90px; font-weight: 700; color: #2563eb; }
+          .meta-row .label { width: 90px; font-weight: 700; color: #26a69a; }
           .meta-row .value { flex: 1; color: #0f172a; }
           
           .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
           .print-table th { 
-            background: #f8fbff; 
+            background: #f0fdf4; 
             border: 0.5px solid #cbd5e1; 
             padding: 6px 8px; 
-            color: #2563eb; 
+            color: #26a69a; 
             font-size: 9px; 
             text-transform: uppercase;
             text-align: left;
@@ -747,7 +827,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           .print-summary { display: flex; justify-content: flex-end; margin-bottom: 15px; page-break-inside: avoid; }
           .summary-wrapper { width: 250px; }
           .summary-row { display: flex; justify-content: space-between; margin-bottom: 3px; padding: 2px 0; }
-          .summary-row .label { font-weight: 700; color: #2563eb; }
+          .summary-row .label { font-weight: 700; color: #26a69a; }
           .summary-row.grand-total { border-top: 1px solid #cbd5e1; padding-top: 6px; margin-top: 4px; font-size: 12px; }
           .summary-row.grand-total .value { font-weight: 800; color: #0f172a; }
 

@@ -205,12 +205,12 @@ export default function CreateBooking() {
   const watchedStayType = useWatch({ control, name: "stayType" });
   const watchedArrivalDate = useWatch({ control, name: "arrivalDate" });
   const watchedDepartureDate = useWatch({ control, name: "departureDate" });
-  const vatPercentValue = useWatch({ control, name: "vatPercent" }) || 7;
+  const vatPercentValue = useWatch({ control, name: "vatPercent" }) ?? 7;
   const totalItemsValue = useWatch({ control, name: "totalItems" }) || 0;
   const globalDiscountType = useWatch({ control, name: "discountType" }) || "percent";
   const globalDiscountValue = useWatch({ control, name: "discountValue" }) || 0;
   const globalDiscountAmountValue = useWatch({ control, name: "discountAmount" }) || 0;
-  const serviceChargePercentValue = useWatch({ control, name: "serviceChargePercent" }) || 10;
+  const serviceChargePercentValue = useWatch({ control, name: "serviceChargePercent" }) ?? 10;
   const serviceChargeAmountValue = useWatch({ control, name: "serviceChargeAmount" }) || 0;
   const vatAmountValue = useWatch({ control, name: "vatAmount" }) || 0;
   const grandTotalValue = useWatch({ control, name: "grandTotal" }) || 0;
@@ -266,21 +266,32 @@ export default function CreateBooking() {
         if (item.discountType === "amount") itemDiscountAmt = round2(item.discountValue || 0);
         else itemDiscountAmt = round2((subtotal * (item.discountValue || 0)) / 100);
         const lineTotal = round2(subtotal - itemDiscountAmt);
+        
+        // Update item values if changed
         if (item.discountAmount !== itemDiscountAmt) setValue(`details.${index}.discountAmount` as any, itemDiscountAmt);
         if (item.lineTotal !== lineTotal) setValue(`details.${index}.lineTotal` as any, lineTotal);
+        
         totalItemsSum = round2(totalItemsSum + lineTotal);
       });
     }
+
     setValue("totalItems", totalItemsSum);
-    const globalDiscAmt = globalDiscountType === "amount" ? round2(globalDiscountValue || 0) : round2((totalItemsSum * (globalDiscountValue || 0)) / 100);
+
+    const globalDiscAmt = globalDiscountType === "amount" 
+      ? round2(globalDiscountValue || 0) 
+      : round2((totalItemsSum * (globalDiscountValue || 0)) / 100);
     setValue("discountAmount", globalDiscAmt);
+
     const afterDiscount = round2(totalItemsSum - globalDiscAmt);
-    const scAmt = round2((afterDiscount * (serviceChargePercentValue || 0)) / 100);
+    const scAmt = round2((afterDiscount * (serviceChargePercentValue ?? 0)) / 100);
     setValue("serviceChargeAmount", scAmt);
+
     const taxableAmount = round2(afterDiscount + scAmt);
-    const vtAmt = round2((taxableAmount * (vatPercentValue || 0)) / 100);
+    const vtAmt = round2((taxableAmount * (vatPercentValue ?? 0)) / 100);
     setValue("vatAmount", vtAmt);
-    setValue("grandTotal", round2(taxableAmount + vtAmt));
+
+    const finalTotal = round2(taxableAmount + vtAmt);
+    setValue("grandTotal", finalTotal);
   }, [watchedDetails, vatPercentValue, globalDiscountType, globalDiscountValue, serviceChargePercentValue, watchedLoa, setValue]);
 
   // --- Handlers ---
@@ -372,7 +383,7 @@ export default function CreateBooking() {
           <Space orientation="vertical" size="large" orientation="vertical" className="w-full">
             <Row gutter={24}>
               <Col span={11}>
-                <Card title="Reservation Info" variant="borderless" className="rounded-3xl shadow-soft">
+                <Card title="Reservation Info" variant="borderless" className="modern-card">
                   <AntForm layout="vertical" className="space-y-4">
                     <Row gutter={12}>
                       <Col span={10}><AntForm.Item label="ID" className="mb-0"><Controller name="bookingNo" control={control} render={({ field }) => <Tag color="blue" className="px-4 py-1 text-base font-mono rounded-lg w-full">{field.value || '...'}</Tag>} /></AntForm.Item></Col>
@@ -394,7 +405,7 @@ export default function CreateBooking() {
                 </Card>
               </Col>
               <Col span={13}>
-                <Card title="Entity Details" variant="borderless" className="rounded-3xl shadow-soft h-full">
+                <Card title="Entity Details" variant="borderless" className="modern-card h-full">
                   <AntForm layout="vertical" className="space-y-3">
                     <AntForm.Item label="Customer" required><Controller name="customerName" control={control} render={({ field }) => <Select {...field} placeholder="Select customer..." showSearch options={uniqueCustomers} onChange={handleCustomerChange} className="h-10 w-full" />} /></AntForm.Item>
                     <AntForm.Item label="Vessel" required><Controller name="vesselName" control={control} render={({ field }) => <Select {...field} placeholder="Select vessel..." showSearch options={filteredVessels} onChange={handleVesselChange} className="h-10 w-full" />} /></AntForm.Item>
@@ -417,7 +428,7 @@ export default function CreateBooking() {
               </Col>
             </Row>
 
-            <Card variant="borderless" title={<div className="flex justify-between items-center"><Space><ShoppingOutlined className="text-indigo-500" /><span className="font-bold">Products/Services</span></Space><Button type="primary" shape="round" ghost icon={<PlusOutlined />} onClick={() => append({ productName: "", qty: calculatedQty, unitPrice: 0, discountType: "percent", discountValue: 0, discountAmount: 0, lineTotal: 0 })}>Add Item</Button></div>} className="rounded-3xl shadow-soft overflow-hidden" styles={{ body: { padding: 0 } }}>
+            <Card variant="borderless" title={<div className="flex justify-between items-center"><Space><ShoppingOutlined className="text-indigo-500" /><span className="font-bold">Products/Services</span></Space><Button type="primary" shape="round" ghost icon={<PlusOutlined />} onClick={() => append({ productName: "", qty: calculatedQty, unitPrice: 0, discountType: "percent", discountValue: 0, discountAmount: 0, lineTotal: 0 })}>Add Item</Button></div>} className="modern-card overflow-hidden" styles={{ body: { padding: 0 } }}>
               <Table dataSource={fields} pagination={false} rowKey="id" className="modern-table"
                 columns={[
                   { title: "Item", dataIndex: "productName", render: (_, r, i) => <Controller name={`details.${i}.productName` as any} control={control} render={({ field }) => <Select {...field} placeholder="Select..." showSearch options={products.filter(p => p.productType === 'berthing').map(p => ({ label: p.productName, value: p.productName }))} onSelect={(v) => handleProductSelect(v as string, i)} className="w-full" classNames={{ popup: { root: 'rounded-xl' } }} />} /> },
@@ -441,18 +452,56 @@ export default function CreateBooking() {
 
         <Col span={7}>
           <div className="sticky top-6 space-y-6">
-            <Card title="Summary" variant="borderless" className="rounded-3xl shadow-lg border border-slate-100">
+            <Card title="Summary" variant="borderless" className="modern-card">
               <div className="space-y-4">
                 <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
                   <div className="flex justify-between items-center mb-2"><Space><PercentageOutlined className="text-orange-500" /><Text strong className="text-orange-800 text-xs">Discount</Text></Space><Controller name="discountType" control={control} render={({ field }) => (<Radio.Group {...field} size="small" buttonStyle="solid" className="compact-radio"><Radio.Button value="amount">฿</Radio.Button><Radio.Button value="percent">%</Radio.Button></Radio.Group>)} /></div>
                   <div className="flex justify-between items-end"><Controller name="discountValue" control={control} render={({ field }) => <InputNumber {...field} className="w-24 rounded-lg" precision={2} />} /><Text className="text-orange-600 font-bold">{formatCurrency(globalDiscountAmountValue)}</Text></div>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                  <div className="flex justify-between items-center mb-2"><Space><SafetyCertificateOutlined className="text-blue-500" /><Text strong className="text-blue-800 text-xs">Service Charge</Text></Space><Controller name="serviceChargePercent" control={control} render={({ field }) => <InputNumber {...field} size="small" variant="borderless" className="w-10 text-blue-600 font-bold" precision={1} />} /></div>
+                  <div className="flex justify-between items-center mb-2">
+                    <Space>
+                      <SafetyCertificateOutlined className="text-blue-500" />
+                      <Text strong className="text-blue-800 text-xs text-nowrap">Service Charge (%)</Text>
+                    </Space>
+                    <Controller 
+                      name="serviceChargePercent" 
+                      control={control} 
+                      render={({ field }) => (
+                        <InputNumber 
+                          {...field} 
+                          size="small" 
+                          className="w-16 rounded-lg text-blue-600 font-bold border-blue-200" 
+                          precision={2} 
+                          step={0.5}
+                          suffix="%"
+                        />
+                      )} 
+                    />
+                  </div>
                   <Text className="block text-right text-blue-600 font-bold">{formatCurrency(serviceChargeAmountValue)}</Text>
                 </div>
                 <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                  <div className="flex justify-between items-center mb-2"><Space><AuditOutlined className="text-emerald-500" /><Text strong className="text-emerald-800 text-xs">VAT (%)</Text></Space><Controller name="vatPercent" control={control} render={({ field }) => <InputNumber {...field} size="small" variant="borderless" className="w-10 text-emerald-600 font-bold" precision={1} />} /></div>
+                  <div className="flex justify-between items-center mb-2">
+                    <Space>
+                      <AuditOutlined className="text-emerald-500" />
+                      <Text strong className="text-emerald-800 text-xs text-nowrap">VAT (%)</Text>
+                    </Space>
+                    <Controller 
+                      name="vatPercent" 
+                      control={control} 
+                      render={({ field }) => (
+                        <InputNumber 
+                          {...field} 
+                          size="small" 
+                          className="w-16 rounded-lg text-emerald-600 font-bold border-emerald-200" 
+                          precision={2} 
+                          step={1}
+                          suffix="%"
+                        />
+                      )} 
+                    />
+                  </div>
                   <Text className="block text-right text-emerald-600 font-bold">{formatCurrency(vatAmountValue)}</Text>
                 </div>
                 <div className="p-5 bg-indigo-600 rounded-2xl text-center shadow-lg shadow-indigo-100">

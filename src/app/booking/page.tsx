@@ -87,7 +87,7 @@ export default function BookingPage() {
       width: 160,
       render: (text: string, record: Booking) => (
         <div className="flex flex-col py-0.5">
-          <Text strong className="text-indigo-600 font-mono hover:text-blue-500 cursor-pointer">
+          <Text strong className="text-teal-600 font-mono hover:text-teal-500 cursor-pointer">
             {text}
           </Text>
           <Text className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1  tracking-wide">
@@ -116,7 +116,7 @@ export default function BookingPage() {
       render: (_: any, record: Booking) => (
         <div className="flex flex-col">
           <Space size={6}>
-            <CompassOutlined className="text-indigo-300" />
+            <CompassOutlined className="text-teal-300" />
             <Text className="text-slate-700 font-medium">{record.vesselName || "N/A"}</Text>
           </Space>
           <div className="flex gap-4 mt-1.5 pl-5">
@@ -154,7 +154,7 @@ export default function BookingPage() {
       key: "stayType",
       width: 100,
       render: (val: string) => (
-        <Tag color={val === 'monthly' ? 'blue' : 'cyan'} className="m-0 border-none px-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+        <Tag color={val === 'monthly' ? 'teal' : 'cyan'} className="m-0 border-none px-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
           {val || 'Daily'}
         </Tag>
       )
@@ -245,7 +245,7 @@ export default function BookingPage() {
       body: tableData,
       theme: "striped",
       headStyles: { 
-        fillColor: [79, 70, 229], // Indigo-600
+        fillColor: [38, 166, 154], // Teal-500
         textColor: 255, 
         fontSize: 10, 
         halign: 'center',
@@ -272,40 +272,59 @@ export default function BookingPage() {
         <div>
           <Title level={3} className="m-0 font-bold tracking-tight text-slate-800">Booking List</Title>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Input
             placeholder="Quick search..."
-            prefix={<SearchOutlined className="text-slate-300" />}
-            className="w-56 rounded-xl border-slate-100 h-10"
+            prefix={<SearchOutlined className="text-slate-400" />}
+            className="w-64 rounded-2xl border-none shadow-sm h-11 bg-white"
             allowClear
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Link href="/booking/create">
-            <Button type="primary" icon={<PlusOutlined />} className="bg-indigo-600 rounded-xl px-6 h-10 font-medium">
-              New Booking
-            </Button>
-          </Link>
-          <Button icon={<ReloadOutlined />} onClick={loadData} className="rounded-xl h-10 border-slate-100" />
           
-          <div className="flex items-center gap-2 p-1.5 bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-100">
-            <Tooltip title="Export to Excel">
+          <div className="flex items-center gap-2">
+            <Link href="/booking/create">
               <Button 
-                icon={<FileExcelOutlined />} 
-                onClick={handleExportExcel}
-                className="bg-emerald-500 text-white rounded-xl border-none h-8 px-3 hover:bg-emerald-600 transition-all font-bold flex items-center gap-2 text-[10px]"
+                type="primary" 
+                icon={<PlusOutlined />} 
+                className="bg-teal-600 hover:bg-teal-700 rounded-2xl px-6 h-11 font-bold border-none shadow-lg shadow-teal-500/20 transition-all hover:translate-y-[-1px]"
               >
-                Excel
+                New Booking
               </Button>
-            </Tooltip>
-            <Tooltip title="Export to PDF">
-              <Button 
-                icon={<FilePdfOutlined />} 
-                onClick={handleExportPDF}
-                className="bg-rose-500 text-white rounded-xl border-none h-8 px-3 hover:bg-rose-600 transition-all font-bold flex items-center gap-2 text-[10px]"
-              >
-                PDF
-              </Button>
-            </Tooltip>
+            </Link>
+
+            <div className="h-11 flex items-center bg-white rounded-2xl shadow-sm border border-slate-100 p-1 gap-1">
+              <Tooltip title="Refresh Data">
+                <Button 
+                  type="text"
+                  icon={<ReloadOutlined className="text-slate-400" />} 
+                  onClick={loadData} 
+                  className="rounded-xl h-9 w-9 flex items-center justify-center hover:bg-slate-50 hover:text-teal-600" 
+                />
+              </Tooltip>
+              
+              <div className="w-[1px] h-4 bg-slate-100 mx-1"></div>
+
+              <Tooltip title="Export to Excel">
+                <Button 
+                  type="text"
+                  icon={<FileExcelOutlined className="text-emerald-500" />} 
+                  onClick={handleExportExcel}
+                  className="hover:bg-emerald-50 rounded-xl h-9 px-3 font-bold text-[11px] flex items-center gap-2"
+                >
+                  Excel
+                </Button>
+              </Tooltip>
+              <Tooltip title="Export to PDF">
+                <Button 
+                  type="text"
+                  icon={<FilePdfOutlined className="text-rose-500" />} 
+                  onClick={handleExportPDF}
+                  className="hover:bg-rose-50 rounded-xl h-9 px-3 font-bold text-[11px] flex items-center gap-2"
+                >
+                  PDF
+                </Button>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -342,7 +361,7 @@ export default function BookingPage() {
           font-size: 11px !important;
         }
         .imm-table .ant-table-tbody > tr:hover > td {
-          background: #f8fbff !important;
+          background: #f0fdfa !important;
         }
       `}</style>
     </div>

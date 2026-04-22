@@ -418,7 +418,7 @@ export default function CreateQuotation() {
           <Space orientation="vertical" size="large" className="w-full">
             <Row gutter={24}>
               <Col span={11}>
-                <Card title="Quotation Info" variant="borderless" className="rounded-3xl shadow-soft">
+                <Card title="Quotation Info" variant="borderless" className="modern-card">
                   <AntForm layout="vertical" className="space-y-4">
                     <Row gutter={12}>
                       <Col span={10}><AntForm.Item label="ID" className="mb-0"><Controller name="quNo" control={control} render={({ field }) => <Tag color="indigo" className="px-4 py-1 text-base font-mono rounded-lg w-full">{field.value || '...'}</Tag>} /></AntForm.Item></Col>
@@ -440,7 +440,7 @@ export default function CreateQuotation() {
                 </Card>
               </Col>
               <Col span={13}>
-                <Card title="Entity Details" variant="borderless" className="rounded-3xl shadow-soft h-full">
+                <Card title="Entity Details" variant="borderless" className="modern-card h-full">
                   <AntForm layout="vertical" className="space-y-3">
                     <AntForm.Item label="Customer" required><Controller name="customerName" control={control} render={({ field }) => <Select {...field} placeholder="Select customer..." showSearch options={uniqueCustomers} onChange={handleCustomerChange} className="h-10 w-full" />} /></AntForm.Item>
                     <AntForm.Item label="Vessel" required><Controller name="vesselName" control={control} render={({ field }) => <Select {...field} placeholder="Select vessel..." showSearch options={filteredVessels} onChange={handleVesselChange} className="h-10 w-full" />} /></AntForm.Item>
@@ -463,7 +463,7 @@ export default function CreateQuotation() {
               </Col>
             </Row>
 
-            <Card variant="borderless" title={<div className="flex justify-between items-center"><Space><ShoppingOutlined className="text-indigo-500" /><span className="font-bold">Products/Services</span></Space><Button type="primary" shape="round" ghost icon={<PlusOutlined />} onClick={() => append({ productName: "", qty: calculatedQty, unitPrice: 0, discountType: "percent", discountValue: 0, discountAmount: 0, lineTotal: 0 })}>Add Item</Button></div>} className="rounded-3xl shadow-soft overflow-hidden" styles={{ body: { padding: 0 } }}>
+            <Card variant="borderless" title={<div className="flex justify-between items-center"><Space><ShoppingOutlined className="text-indigo-500" /><span className="font-bold">Products/Services</span></Space><Button type="primary" shape="round" ghost icon={<PlusOutlined />} onClick={() => append({ productName: "", qty: calculatedQty, unitPrice: 0, discountType: "percent", discountValue: 0, discountAmount: 0, lineTotal: 0 })}>Add Item</Button></div>} className="modern-card overflow-hidden" styles={{ body: { padding: 0 } }}>
               <Table dataSource={fields} pagination={false} rowKey="id" className="modern-table"
                 columns={[
                   { title: "Item", dataIndex: "productName", render: (_, r, i) => <Controller name={`details.${i}.productName` as any} control={control} render={({ field }) => <Select {...field} placeholder="Select item..." showSearch options={products.filter(p => p.productType === 'berthing').map(p => ({ label: p.productName, value: p.productName }))} onSelect={(v) => handleProductSelect(v as string, i)} className="w-full" classNames={{ popup: { root: 'rounded-xl' } }} />} /> },
@@ -487,7 +487,7 @@ export default function CreateQuotation() {
 
         <Col span={7}>
           <div className="sticky top-6 space-y-6">
-            <Card title="Summary" variant="borderless" className="rounded-3xl shadow-lg border border-slate-100">
+            <Card title="Summary" variant="borderless" className="modern-card">
               <div className="space-y-4">
                 <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
                   <div className="flex justify-between items-center mb-2"><Space><PercentageOutlined className="text-orange-500" /><Text strong className="text-orange-800 text-xs text-nowrap">Discount</Text></Space><Controller name="discountType" control={control} render={({ field }) => (<Radio.Group {...field} size="small" buttonStyle="solid" className="compact-radio"><Radio.Button value="amount">฿</Radio.Button><Radio.Button value="percent">%</Radio.Button></Radio.Group>)} /></div>
@@ -550,35 +550,6 @@ export default function CreateQuotation() {
         </Col>
       </Row>
 
-      <style jsx global>{`
-        .shadow-soft { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.04); }
-        .modern-table .ant-table-thead > tr > th {
-          background: #fafbfc !important;
-          color: #94a3b8 !important;
-          font-size: 10px !important;
-          font-weight: 800 !important;
-          letter-spacing: 0.1em !important;
-          border-bottom: 1px solid #f1f5f9 !important;
-          padding: 16px 24px !important;
-        }
-        .modern-table .ant-table-tbody > tr > td {
-          padding: 16px 24px !important;
-          border-bottom: 1px solid #f8fafc !important;
-        }
-        .compact-radio .ant-radio-button-wrapper {
-          border-radius: 8px !important;
-          border: none !important;
-          background: #f1f5f9 !important;
-          color: #64748b !important;
-          font-weight: 700 !important;
-          font-size: 10px !important;
-          margin-left: 4px;
-        }
-        .compact-radio .ant-radio-button-wrapper-checked {
-          background: #f97316 !important;
-          color: white !important;
-        }
-      `}</style>
     </div>
   );
 }
